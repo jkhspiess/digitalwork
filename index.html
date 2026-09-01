@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Work – Study assistant</title>
+</head>
+<body style="margin:0;padding:clamp(8px,3vw,28px);background:#f3f5f8">
+
+<!-- ======================================================================
+     WORDPRESS: copy everything from this line down to the closing marker
+     into one “Custom HTML” block. Nothing above or below is needed there.
+     ====================================================================== -->
+<div id="lernassistent" lang="en">
+<style>
+  #lernassistent#lernassistent, #lernassistent#lernassistent dialog {
+    --la-orange: #ff9900;
+    --la-blue: #004983;
+    --la-blue-deep: #003a69;
+    --la-red: #821131;
+    --la-ink: #1f2933;
+    --la-muted: #5c6670;
+    --la-line: #dde2e8;
+    --la-paper: #f3f5f8;
+    --la-blue-soft: #e6eef6;
+    --la-orange-soft: #fff1dc;
+    --la-serif: "Charter", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --la-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --la-measure: 66ch;
+  }
+
+  /* Root: cut inheritance from the host page, then set everything explicitly. */
+  #lernassistent#lernassistent {
+    all: initial;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    font-family: var(--la-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--la-ink);
+    text-align: left;
+    background: #fff;
+    border: 1px solid var(--la-line);
+    border-radius: 12px;
+    overflow: hidden;
+    container-type: inline-size;
+    container-name: lernassistent;
+    scroll-margin-top: 90px;
+    -webkit-text-size-adjust: 100%;
+  }
+  #lernassistent#lernassistent *, #lernassistent#lernassistent *::before, #lernassistent#lernassistent *::after { box-sizing: border-box; }
+  #lernassistent#lernassistent [hidden] { display: none !important; }
+
+  /* Element resets with high specificity so theme rules like
+     ".entry-content h1" or "#content p" do not leak in. */
+  #lernassistent#lernassistent h1, #lernassistent#lernassistent h2, #lernassistent#lernassistent p, #lernassistent#lernassistent ul, #lernassistent#lernassistent li, #lernassistent#lernassistent div, #lernassistent#lernassistent span, #lernassistent#lernassistent small, #lernassistent#lernassistent section,
+  #lernassistent#lernassistent article, #lernassistent#lernassistent header, #lernassistent#lernassistent footer, #lernassistent#lernassistent aside, #lernassistent#lernassistent main, #lernassistent#lernassistent svg {
+    margin: 0; padding: 0; border: 0; background: none;
+    box-shadow: none; text-shadow: none; opacity: 1;
+    text-transform: none; letter-spacing: normal; text-align: left; text-indent: 0;
+    font: inherit; color: inherit; list-style: none; float: none;
+    width: auto; max-width: none; min-height: 0; text-decoration: none;
+  }
+  #lernassistent#lernassistent button, #lernassistent#lernassistent input {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-block;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+  }
+  #lernassistent#lernassistent button { cursor: pointer; }
+  #lernassistent#lernassistent button:focus-visible, #lernassistent#lernassistent input:focus-visible, #lernassistent#lernassistent [tabindex]:focus-visible { outline: 2px solid var(--la-blue); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { #lernassistent#lernassistent * { transition: none !important; animation: none !important; } }
+
+  /* header */
+  #lernassistent#lernassistent .la-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding: 16px 22px; border-bottom: 1px solid var(--la-line); }
+  #lernassistent#lernassistent .la-brand { font-family: var(--la-serif); font-size: 21px; line-height: 1.2; }
+  #lernassistent#lernassistent .la-brand button { display: block; }
+  #lernassistent#lernassistent .la-brand .la-brand-title { display: block; font-weight: 600; color: var(--la-blue); }
+  #lernassistent#lernassistent .la-brand small { display: block; font-family: var(--la-sans); font-size: 13px; color: var(--la-muted); margin-top: 3px; }
+  #lernassistent#lernassistent .la-search { margin-left: auto; flex: 1 1 280px; max-width: 520px; position: relative; }
+  #lernassistent#lernassistent .la-search input { display: block; width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--la-line); border-radius: 999px; background: var(--la-paper); font-size: 15px; line-height: 1.4; color: var(--la-ink); }
+  #lernassistent#lernassistent .la-search input::placeholder { color: var(--la-muted); opacity: 1; }
+  #lernassistent#lernassistent .la-search input:focus { border-color: var(--la-blue); background: #fff; }
+  #lernassistent#lernassistent .la-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--la-muted); pointer-events: none; }
+
+  /* two columns: concept index and reading pane */
+  #lernassistent#lernassistent .la-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+  #lernassistent#lernassistent .la-index { border-right: 1px solid var(--la-line); padding: 18px 10px 36px 18px; }
+  #lernassistent#lernassistent .la-index-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--la-muted); padding: 0 10px 8px; }
+  #lernassistent#lernassistent .la-index-toggle { display: none; color: var(--la-blue); font-weight: 600; }
+  #lernassistent#lernassistent .la-index li button { display: block; width: 100%; padding: 7px 10px; border-radius: 6px; border-left: 3px solid transparent; font-size: 15px; line-height: 1.3; }
+  #lernassistent#lernassistent .la-index li button:hover { background: var(--la-blue-soft); }
+  #lernassistent#lernassistent .la-index li button[aria-current="true"] { background: var(--la-orange-soft); border-left-color: var(--la-orange); }
+  #lernassistent#lernassistent .la-index .la-tag { display: block; font-size: 12px; color: var(--la-muted); margin-top: 2px; }
+  #lernassistent#lernassistent .la-index .la-empty { padding: 8px 10px; color: var(--la-muted); font-size: 14px; line-height: 1.4; }
+
+  #lernassistent#lernassistent .la-view { padding: 30px 32px 64px; min-width: 0; }
+  #lernassistent#lernassistent .la-view h1 { font-family: var(--la-serif); font-weight: 500; font-size: 32px; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 14px; max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-view h1:focus { outline: none; }
+  #lernassistent#lernassistent .la-lead, #lernassistent#lernassistent .la-kurz { font-family: var(--la-serif); font-size: 19px; line-height: 1.55; max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-kurz { margin-bottom: 26px; }
+  #lernassistent#lernassistent .la-lead { margin-bottom: 22px; }
+
+  /* the five follow-up questions */
+  #lernassistent#lernassistent .la-levels { display: flex; flex-wrap: wrap; gap: 8px; }
+  #lernassistent#lernassistent .la-levels button { padding: 8px 14px; border: 1px solid var(--la-line); border-radius: 999px; background: #fff; font-size: 14px; line-height: 1.3; }
+  #lernassistent#lernassistent .la-levels button:hover { border-color: var(--la-blue); color: var(--la-blue); }
+  #lernassistent#lernassistent .la-levels button[aria-expanded="true"] { background: var(--la-orange); border-color: var(--la-orange); color: var(--la-ink); }
+  #lernassistent#lernassistent .la-levels button:disabled { opacity: 0.45; cursor: not-allowed; }
+  #lernassistent#lernassistent .la-levels button:disabled:hover { border-color: var(--la-line); color: var(--la-ink); }
+  #lernassistent#lernassistent .la-panel { margin-top: 18px; padding: 2px 0 2px 18px; border-left: 4px solid var(--la-orange); max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-panel .la-q { font-size: 13px; color: var(--la-muted); margin-bottom: 6px; }
+  #lernassistent#lernassistent .la-panel .la-t { font-family: var(--la-serif); font-size: 17.5px; line-height: 1.6; }
+  #lernassistent#lernassistent .la-panel .la-t.la-todo { color: var(--la-red); }
+
+  #lernassistent#lernassistent .la-section-title { font-size: 13px; font-weight: 600; color: var(--la-muted); margin-bottom: 10px; }
+  #lernassistent#lernassistent .la-related { margin-top: 34px; max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  #lernassistent#lernassistent .la-chip { padding: 6px 12px; border-radius: 999px; background: var(--la-blue-soft); color: var(--la-blue); font-size: 14px; line-height: 1.3; }
+  #lernassistent#lernassistent .la-chip:hover { background: var(--la-blue); color: #fff; }
+
+  /* flashcards under a concept */
+  #lernassistent#lernassistent .la-cards { margin-top: 36px; max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-cards-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  #lernassistent#lernassistent .la-cards-head .la-section-title { margin: 0; }
+  #lernassistent#lernassistent .la-card { border-top: 1px solid var(--la-line); padding: 12px 0; }
+  #lernassistent#lernassistent .la-card:last-child { border-bottom: 1px solid var(--la-line); }
+  #lernassistent#lernassistent .la-card > button { display: flex; width: 100%; gap: 12px; align-items: flex-start; }
+  #lernassistent#lernassistent .la-card .la-f { font-family: var(--la-serif); font-size: 17px; line-height: 1.45; flex: 1; }
+  #lernassistent#lernassistent .la-card .la-hint { font-size: 12px; color: var(--la-muted); white-space: nowrap; padding-top: 5px; }
+  #lernassistent#lernassistent .la-card .la-r { margin-top: 10px; padding: 10px 12px; background: var(--la-orange-soft); border-radius: 6px; font-family: var(--la-serif); font-size: 16px; line-height: 1.5; }
+
+  /* buttons */
+  #lernassistent#lernassistent .la-btn { display: inline-block; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--la-blue); background: var(--la-blue); color: #fff; font-size: 14px; font-weight: 600; line-height: 1.3; text-align: center; }
+  #lernassistent#lernassistent .la-btn:hover { background: var(--la-blue-deep); border-color: var(--la-blue-deep); }
+  #lernassistent#lernassistent .la-btn.la-ghost { background: transparent; color: var(--la-blue); }
+  #lernassistent#lernassistent .la-btn.la-ghost:hover { background: var(--la-blue-soft); }
+  #lernassistent#lernassistent .la-btn.la-quiet { border-color: var(--la-line); color: var(--la-ink); background: #fff; }
+  #lernassistent#lernassistent .la-btn.la-quiet:hover { border-color: var(--la-muted); background: #fff; }
+
+  /* start page */
+  #lernassistent#lernassistent .la-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  #lernassistent#lernassistent .la-stats, #lernassistent#lernassistent .la-note { font-size: 14px; color: var(--la-muted); max-width: var(--la-measure); }
+  #lernassistent#lernassistent .la-empty-box { padding: 16px 18px; border: 1px dashed var(--la-line); border-radius: 8px; max-width: var(--la-measure); font-size: 15px; }
+
+  /* practice: a native dialog, so it sits above everything on the host page */
+  #lernassistent#lernassistent .la-practice { border: 0; padding: 0; margin: auto; background: transparent; width: min(640px, calc(100vw - 32px)); max-width: none; color: var(--la-ink); font-family: var(--la-sans); font-size: 16px; line-height: 1.5; text-align: left; }
+  #lernassistent#lernassistent .la-practice::backdrop { background: rgba(31, 41, 51, 0.55); }
+  #lernassistent#lernassistent .la-deck { background: #fff; border-radius: 14px; padding: 22px 28px 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); outline: none; }
+  #lernassistent#lernassistent .la-deck-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--la-muted); margin-bottom: 12px; }
+  #lernassistent#lernassistent .la-deck-head .la-close { font-size: 18px; line-height: 1; padding: 4px 6px; border-radius: 6px; color: var(--la-muted); }
+  #lernassistent#lernassistent .la-deck-head .la-close:hover { background: var(--la-paper); color: var(--la-ink); }
+  #lernassistent#lernassistent .la-progress { height: 4px; background: var(--la-line); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
+  #lernassistent#lernassistent .la-progress span { display: block; height: 100%; background: var(--la-orange); transition: width 0.2s; }
+  #lernassistent#lernassistent .la-deck .la-concept-name { font-size: 13px; color: var(--la-muted); margin-bottom: 6px; }
+  #lernassistent#lernassistent .la-deck .la-question { font-family: var(--la-serif); font-size: 24px; line-height: 1.35; margin-bottom: 20px; min-height: 2.7em; }
+  #lernassistent#lernassistent .la-deck .la-answer { font-family: var(--la-serif); font-size: 18px; line-height: 1.5; margin-bottom: 20px; padding: 14px 16px; background: var(--la-orange-soft); border-radius: 8px; }
+  #lernassistent#lernassistent .la-deck .la-summary { font-size: 16px; margin-bottom: 20px; }
+  #lernassistent#lernassistent .la-deck .la-keys { font-size: 12px; color: var(--la-muted); margin-top: 14px; }
+
+  /* content check (author view) */
+  #lernassistent#lernassistent .la-issues { max-width: 80ch; }
+  #lernassistent#lernassistent .la-issues li { display: grid; grid-template-columns: 78px 1fr; gap: 4px 14px; padding: 9px 0; border-top: 1px solid var(--la-line); font-size: 14px; }
+  #lernassistent#lernassistent .la-issues li:last-child { border-bottom: 1px solid var(--la-line); }
+  #lernassistent#lernassistent .la-issues .la-sev { font-weight: 600; }
+  #lernassistent#lernassistent .la-issues li.la-error .la-sev { color: var(--la-red); }
+  #lernassistent#lernassistent .la-issues li.la-todo .la-sev { color: var(--la-blue); }
+  #lernassistent#lernassistent .la-issues li.la-warn .la-sev { color: var(--la-muted); }
+  #lernassistent#lernassistent .la-issues .la-where { grid-column: 2; color: var(--la-muted); }
+  #lernassistent#lernassistent .la-issues .la-msg { grid-column: 2; }
+  #lernassistent#lernassistent .la-report .la-lead { margin-bottom: 18px; }
+  #lernassistent#lernassistent .la-report .la-note { margin-top: 22px; }
+
+  #lernassistent#lernassistent .la-foot { padding: 14px 22px 18px; font-size: 13px; color: var(--la-muted); display: flex; gap: 18px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--la-line); }
+  #lernassistent#lernassistent .la-foot button { text-decoration: underline; color: var(--la-muted); }
+  #lernassistent#lernassistent .la-foot button:hover { color: var(--la-ink); }
+
+  /* Narrow layout. The container query reacts to the width of the app itself
+     (a WordPress content column, for instance); the media query is the
+     fallback for browsers without container queries. */
+  @container lernassistent (max-width: 680px) {
+    #lernassistent#lernassistent .la-top { padding: 12px 16px; gap: 10px; }
+    #lernassistent#lernassistent .la-search { margin-left: 0; flex-basis: 100%; max-width: none; }
+    #lernassistent#lernassistent .la-layout { grid-template-columns: 1fr; }
+    #lernassistent#lernassistent .la-index { border-right: 0; border-bottom: 1px solid var(--la-line); padding: 10px 16px; }
+    #lernassistent#lernassistent .la-index-head { padding: 4px 0; }
+    #lernassistent#lernassistent .la-index-toggle { display: inline; }
+    #lernassistent#lernassistent .la-index ul { display: none; padding-bottom: 6px; }
+    #lernassistent#lernassistent .la-index.la-open ul { display: block; }
+    #lernassistent#lernassistent .la-view { padding: 22px 16px 48px; }
+    #lernassistent#lernassistent .la-view h1 { font-size: 27px; }
+    #lernassistent#lernassistent .la-lead, #lernassistent#lernassistent .la-kurz { font-size: 17.5px; }
+  }
+  @media (max-width: 680px) {
+    #lernassistent#lernassistent .la-top { padding: 12px 16px; gap: 10px; }
+    #lernassistent#lernassistent .la-search { margin-left: 0; flex-basis: 100%; max-width: none; }
+    #lernassistent#lernassistent .la-layout { grid-template-columns: 1fr; }
+    #lernassistent#lernassistent .la-index { border-right: 0; border-bottom: 1px solid var(--la-line); padding: 10px 16px; }
+    #lernassistent#lernassistent .la-index-head { padding: 4px 0; }
+    #lernassistent#lernassistent .la-index-toggle { display: inline; }
+    #lernassistent#lernassistent .la-index ul { display: none; padding-bottom: 6px; }
+    #lernassistent#lernassistent .la-index.la-open ul { display: block; }
+    #lernassistent#lernassistent .la-view { padding: 22px 16px 48px; }
+    #lernassistent#lernassistent .la-view h1 { font-size: 27px; }
+    #lernassistent#lernassistent .la-lead, #lernassistent#lernassistent .la-kurz { font-size: 17.5px; }
+    #lernassistent#lernassistent .la-deck { padding: 18px 18px 16px; }
+    #lernassistent#lernassistent .la-deck .la-question { font-size: 21px; }
+  }
+</style>
+
+<header class="la-top">
+  <div class="la-brand">
+    <button type="button" id="la-brand-btn" aria-label="Go to start">
+      <span class="la-brand-title" id="la-brand-title">Digital Work</span>
+      <small id="la-brand-sub">Study assistant</small>
+    </button>
+  </div>
+  <div class="la-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="la-q" type="search" autocomplete="off" spellcheck="false" placeholder="Search a concept or keyword" aria-label="Search concepts">
+  </div>
+</header>
+
+<div class="la-layout">
+  <aside class="la-index" id="la-index" aria-label="Concept index">
+    <div class="la-index-head">
+      <span><span id="la-index-title">Concepts</span> <span id="la-index-count"></span></span>
+      <button type="button" class="la-index-toggle" id="la-index-toggle" aria-expanded="false">Show</button>
+    </div>
+    <ul id="la-index-list"></ul>
+  </aside>
+  <main class="la-view" id="la-view"></main>
+</div>
+
+<footer class="la-foot">
+  <span id="la-foot-text"></span>
+  <button type="button" id="la-check-btn">Check content</button>
+</footer>
+
+<dialog class="la-practice" id="la-practice" aria-label="Flashcard practice">
+  <div class="la-deck" id="la-deck" tabindex="-1"></div>
+</dialog>
+
+<noscript><p style="padding:24px">This study assistant needs JavaScript to run.</p></noscript>
+
+<script>
+// ============================================================
+//  SETTINGS — course frame and interface wording.
+//  Edit freely. The interface is English; the data fields
+//  below keep their German names so generated blocks fit.
+// ============================================================
+var KURS = {
+  titel: "Digital Work",
+  untertitel: "Study assistant for the exam",
+  fusszeile: "Content follows the course material of Digital Work at MCI.",
+  checkLink: true   // set to false to hide the “Check content” link from students
+};
+
+var UI = {
+  appName: "Study assistant",
+  searchPlaceholder: "Search a concept or keyword",
+  indexTitle: "Concepts",
+  noResults: "Nothing matches. Try another spelling or a related term.",
+  foundVia: "found via",
+  show: "Show",
+  hide: "Hide",
+  levels: {
+    einfacher: "Explain it more simply",
+    beispiel: "Show me an example",
+    denkfehler: "What\u2019s often done wrong?",
+    tiefer: "Go deeper",
+    pruefung: "How does this come up in the exam?"
+  },
+  notAvailable: "Not written yet",
+  related: "Related concepts",
+  cards: "Flashcards",
+  reveal: "Show answer",
+  conceal: "Hide answer",
+  practiceThese: "Practice these cards",
+  practiceAll: "Practice all cards",
+  allCardsLabel: "All cards",
+  random: "Open a random concept",
+  showAnswer: "Show answer",
+  knewIt: "Knew it",
+  again: "Didn\u2019t know it",
+  close: "Close",
+  restart: "Start over",
+  repeatMissed: "Repeat the ones I missed",
+  doneTitle: "Deck finished.",
+  doneText: function (total, missed) {
+    if (!missed) return total + " cards, none missed.";
+    return total + " cards, " + missed + (missed === 1 ? " card" : " cards") + " came back around. Repeat the missed ones until they stick.";
+  },
+  keysReveal: "Space shows the answer. Esc closes.",
+  keysGraded: "1 = didn\u2019t know it, 2 = knew it. Esc closes.",
+  progress: function (done, total) { return done + " of " + total + " known"; },
+  homeLead: "Look up a concept, read the short answer, then press the follow-up question you would ask in office hours. Drill the flashcards until you can answer before you flip.",
+  stats: function (n, c) { return n + " concepts, " + c + " flashcards."; },
+  emptyTitle: "No content yet",
+  emptyText: "Paste the concept blocks between the CONTENT START and CONTENT END markers in this file, then reload.",
+  checkTitle: "Content check",
+  checkSummary: function (n, c, e, w, t) { return n + " concepts, " + c + " flashcards. " + e + " errors, " + w + " warnings, " + t + " open TODOs."; },
+  checkClean: "No issues found.",
+  checkNote: "Errors break the app or its links. Warnings are deviations from the writing rules; judge them yourself. This page is for the author, not for students.",
+  sev: { error: "Error", warn: "Warning", todo: "TODO" }
+};
+
+// ============================================================
+//  CONTENT START
+//  Replace everything between this line and CONTENT END with
+//  the blocks produced in “Block” mode. Keep the field names
+//  exactly: id, titel, schlagworte, kurz, ebenen (einfacher,
+//  beispiel, denkfehler, tiefer, pruefung), verwandt, karten (f, r).
+//  The two entries below are placeholders that explain the app.
+// ============================================================
+var KONZEPTE = [
+  {
+    id: "demo-how-to-use",
+    titel: "Demo: how this assistant works",
+    schlagworte: ["demo", "help", "how to", "instructions", "getting started", "example concept", "placeholder"],
+    kurz: "This entry shows what one concept looks like in the app. Every concept has a short answer like this one, five follow-up questions, links to neighbouring concepts and a few flashcards. Replace it with real course content.",
+    ebenen: {
+      einfacher: "Think of each concept as a page in a revision notebook. The first paragraph is the answer you would give if someone stopped you in the corridor. The five buttons are the questions you would ask next if you did not fully get it: make it simpler, show me a case, tell me the trap, explain the mechanism, and tell me what the examiner wants.",
+      beispiel: "A student searches for „sociotechnical“, opens the concept, reads the short answer and presses „Show me an example“. They read a case with real names and numbers, then press „What\u2019s often done wrong?“ and recognise a mistake from last week\u2019s mock exam. They finish with the flashcards at the bottom and mark two of them as not known. Those two come back in the next practice round.",
+      denkfehler: "Reading all five answers once and moving on. The levels are meant to be opened when a question actually comes up, not worked through as a checklist. Watch for the moment where you recognise the words but could not explain them to a friend. That is when you open the flashcards, not the next concept. Recognition is not recall, and the exam tests recall.",
+      tiefer: "The app renders plain text only. It reads each concept by field name, so the field names must stay exactly as they are. Search matches the title, the keywords and the short answer, which is why the keyword list should contain synonyms and common misspellings. The content check in the footer lists deviations from the writing rules and every unfinished entry.",
+      pruefung: "This entry is not exam content. In a real concept this level tells you the question format, what a full-mark answer contains and where marks are typically lost. It also says whether the topic is central or marginal, so you can decide how much time it deserves. If the material gives no basis for this, the author leaves a placeholder note instead of guessing."
+    },
+    verwandt: ["demo-flashcards"],
+    karten: [
+      { f: "What do the five buttons under a concept represent?", r: "Five fixed follow-up questions, each answered on its own level." },
+      { f: "Which fields does the search look at?", r: "The title, the keywords and the short answer." },
+      { f: "Why must the field names in the content block stay unchanged?", r: "The app reads each field by its name." }
+    ]
+  },
+  {
+    id: "demo-flashcards",
+    titel: "Demo: flashcards and practice",
+    schlagworte: ["demo", "flashcards", "cards", "practice", "drill", "quiz", "repetition"],
+    kurz: "Flashcards are short question and answer pairs attached to a concept. You can flip them one by one under the concept or practise a whole deck. Cards you miss come back until you know them.",
+    ebenen: {
+      einfacher: "A flashcard is a question on the front and the answer on the back. You read the question, say the answer out loud, then flip. If you were right, the card goes on the done pile. If not, it goes to the bottom of the stack and comes back. That is all the practice mode does. Missed cards keep returning until you get them.",
+      beispiel: "You start „Practice all cards“ with 40 cards. Card 7 asks for the two subsystems of a sociotechnical system. You say „technology and people“, flip, and see that the answer names the social and the technical subsystem and their joint optimisation. You mark it as not known, it returns near the end, and this time you get it. Missing half of a two-part answer counts as a miss.",
+      denkfehler: "Flipping the card before answering. If you read the answer first, recognition feels like knowledge. Say or write the answer before you flip, every time. A second trap is marking a card as known because the gist was right. If the answer names two things and you got one, it is not known yet. Grade yourself the way the examiner would.",
+      tiefer: "The practice mode shuffles the deck, shows one card at a time and puts missed cards back at the end of the queue. A deck ends when every card has been answered as known once. Progress is kept only while the page is open, so a reload starts fresh. Space reveals the answer, 1 marks not known, 2 marks known, Escape closes.",
+      pruefung: "TODO: demo entry, no exam relevance. Delete both demo entries before you hand the file to students."
+    },
+    verwandt: ["demo-how-to-use"],
+    karten: [
+      { f: "What happens to a card you mark as not known?", r: "It goes to the end of the queue and comes up again." },
+      { f: "When does a practice deck end?", r: "When every card has been answered as known once." },
+      { f: "What should you do before flipping a card?", r: "Say or write the answer first, then flip." }
+    ]
+  }
+];
+// ============================================================
+//  CONTENT END
+// ============================================================
+
+
+// ============================================================
+//  APP — nothing below needs editing.
+// ============================================================
+(function () {
+  "use strict";
+
+  var LEVELS = ["einfacher", "beispiel", "denkfehler", "tiefer", "pruefung"];
+  var CHECK_ROUTE = "_check";
+
+  function init() {
+    var root = document.getElementById("lernassistent");
+    if (!root) return;
+    var $ = function (s) { return root.querySelector(s); };
+    // Standalone file or embedded in another page (e.g. WordPress)?
+    var EMBEDDED = root.parentElement !== document.body;
+
+    var byId = new Map(KONZEPTE.filter(function (k) { return k && k.id; }).map(function (k) { return [k.id, k]; }));
+
+    // Build an element. All text goes through textContent, never innerHTML,
+    // so content is shown exactly as written (and cannot inject markup).
+    function h(tag, attrs) {
+      var el = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined) return;
+        if (k === "class") el.className = v;
+        else if (k === "text") el.textContent = v;
+        else if (k.indexOf("on") === 0) el.addEventListener(k.slice(2), v);
+        else el.setAttribute(k, v);
+      });
+      var children = Array.prototype.slice.call(arguments, 2);
+      (function appendAll(list) {
+        list.forEach(function (c) {
+          if (c === null || c === undefined || c === false) return;
+          if (Array.isArray(c)) { appendAll(c); return; }
+          el.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+        });
+      })(children);
+      return el;
+    }
+
+    // ---------- state ----------
+    var query = "";
+    var current = null;      // concept id, CHECK_ROUTE, or null for the start page
+    var practice = null;
+    var dlg = $("#la-practice");
+    var deck = $("#la-deck");
+
+    // ---------- search ----------
+    function norm(s) {
+      return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
+    }
+    function tokens(q) { return norm(q).split(/\s+/).filter(Boolean); }
+
+    function scoreConcept(k, toks) {
+      var title = norm(k.titel), id = norm(k.id), kurz = norm(k.kurz);
+      var tags = (k.schlagworte || []).map(norm);
+      var total = 0;
+      for (var i = 0; i < toks.length; i++) {
+        var w = toks[i], s = 0;
+        if (title === w) s += 20; else if (title.indexOf(w) === 0) s += 14; else if (title.indexOf(w) >= 0) s += 10;
+        if (tags.indexOf(w) >= 0) s += 9;
+        else if (tags.some(function (t) { return t.indexOf(w) === 0; })) s += 6;
+        else if (tags.some(function (t) { return t.indexOf(w) >= 0; })) s += 4;
+        if (id.indexOf(w) >= 0) s += 3;
+        if (kurz.indexOf(w) >= 0) s += 2;
+        if (!s) return 0;           // every word has to match somewhere
+        total += s;
+      }
+      return total;
+    }
+
+    function search(q) {
+      var toks = tokens(q);
+      var list = KONZEPTE.filter(function (k) { return k && k.id && k.titel; });
+      if (!toks.length) return list;
+      return list.map(function (k) { return { k: k, s: scoreConcept(k, toks) }; })
+        .filter(function (x) { return x.s > 0; })
+        .sort(function (a, b) { return b.s - a.s; })
+        .map(function (x) { return x.k; });
+    }
+
+    // If a hit came only through a keyword, show which one — that is how
+    // students learn the course's own term for what they typed.
+    function matchedTag(k, toks) {
+      var tags = k.schlagworte || [];
+      var title = norm(k.titel);
+      for (var i = 0; i < toks.length; i++) {
+        var w = toks[i];
+        if (title.indexOf(w) >= 0) continue;
+        for (var j = 0; j < tags.length; j++) if (norm(tags[j]).indexOf(w) >= 0) return tags[j];
+      }
+      return null;
+    }
+
+    // ---------- index ----------
+    function renderIndex() {
+      var list = search(query);
+      var total = KONZEPTE.length;
+      $("#la-index-count").textContent = "(" + (query ? list.length + " of " + total : total) + ")";
+      var ul = $("#la-index-list");
+      ul.replaceChildren();
+      if (!list.length) {
+        ul.appendChild(h("li", { class: "la-empty", text: UI.noResults }));
+        return;
+      }
+      var toks = tokens(query);
+      list.forEach(function (k) {
+        var b = h("button", { type: "button", "aria-current": k.id === current ? "true" : "false", onclick: function () { go(k.id); } }, k.titel);
+        var t = matchedTag(k, toks);
+        if (t) b.appendChild(h("span", { class: "la-tag", text: UI.foundVia + " \u201E" + t + "\u201C" }));
+        ul.appendChild(h("li", {}, b));
+      });
+    }
+
+    function setIndexOpen(open) {
+      $("#la-index").classList.toggle("la-open", open);
+      var t = $("#la-index-toggle");
+      t.setAttribute("aria-expanded", String(open));
+      t.textContent = open ? UI.hide : UI.show;
+    }
+
+    // ---------- routing ----------
+    function go(id) {
+      var target = id ? "#" + encodeURIComponent(id) : "";
+      if (location.hash === target || (!target && !location.hash)) { route(); return; }
+      location.hash = target;
+    }
+
+    function route() {
+      var raw = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (raw === CHECK_ROUTE) { current = CHECK_ROUTE; renderCheck(); }
+      else if (byId.has(raw)) { current = raw; renderConcept(byId.get(raw)); }
+      else { current = null; renderHome(); }
+      renderIndex();
+      setIndexOpen(current === null);           // only visible in the narrow layout
+      if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ block: "start" });
+      var head = $("#la-view h1");
+      if (head) { head.setAttribute("tabindex", "-1"); head.focus({ preventScroll: true }); }
+    }
+
+    function setTitle(t) { if (!EMBEDDED) document.title = t; }
+
+    // ---------- views ----------
+    function allCards() {
+      var out = [];
+      KONZEPTE.forEach(function (k) {
+        (k.karten || []).forEach(function (c) {
+          if (c && c.f) out.push({ f: c.f, r: c.r || "", konzept: k.titel, id: k.id });
+        });
+      });
+      return out;
+    }
+
+    function renderHome() {
+      var view = $("#la-view");
+      var cards = allCards();
+      var sec = h("section", { class: "la-home" }, h("h1", { text: KURS.titel }));
+      if (!KONZEPTE.length) {
+        sec.appendChild(h("div", { class: "la-empty-box" }, h("p", { text: UI.emptyTitle + ". " + UI.emptyText })));
+      } else {
+        sec.appendChild(h("p", { class: "la-lead", text: UI.homeLead }));
+        sec.appendChild(h("div", { class: "la-actions" },
+          cards.length ? h("button", { class: "la-btn", type: "button", onclick: function () { startPractice(cards, UI.allCardsLabel); } }, UI.practiceAll + " (" + cards.length + ")") : null,
+          h("button", { class: "la-btn la-quiet", type: "button", onclick: function () { var k = KONZEPTE[Math.floor(Math.random() * KONZEPTE.length)]; if (k) go(k.id); } }, UI.random)
+        ));
+        sec.appendChild(h("p", { class: "la-stats", text: UI.stats(KONZEPTE.length, cards.length) }));
+      }
+      view.replaceChildren(sec);
+      setTitle(KURS.titel + " – " + UI.appName);
+    }
+
+    function renderConcept(k) {
+      var view = $("#la-view");
+      var art = h("article", { class: "la-concept" },
+        h("h1", { text: k.titel }),
+        h("p", { class: "la-kurz", text: k.kurz || "" })
+      );
+
+      // five follow-up questions, one open at a time
+      var levels = h("div", { class: "la-levels", role: "group", "aria-label": "Follow-up questions" });
+      var panel = h("div", { class: "la-panel", hidden: "" });
+      var buttons = [];
+      LEVELS.forEach(function (key) {
+        var text = String((k.ebenen && k.ebenen[key]) || "").trim();
+        var b = h("button", { type: "button", "aria-expanded": "false" }, UI.levels[key]);
+        if (!text) { b.disabled = true; b.title = UI.notAvailable; }
+        b.addEventListener("click", function () {
+          var wasOpen = b.getAttribute("aria-expanded") === "true";
+          buttons.forEach(function (o) { o.setAttribute("aria-expanded", "false"); });
+          if (wasOpen) { panel.hidden = true; return; }
+          b.setAttribute("aria-expanded", "true");
+          panel.replaceChildren(
+            h("p", { class: "la-q", text: UI.levels[key] }),
+            h("p", { class: "la-t" + (/^todo\b/i.test(text) ? " la-todo" : ""), text: text })
+          );
+          panel.hidden = false;
+        });
+        buttons.push(b);
+        levels.appendChild(b);
+      });
+      art.appendChild(levels);
+      art.appendChild(panel);
+
+      // related concepts: only ids that exist
+      var rel = (k.verwandt || []).filter(function (id) { return id !== k.id && byId.has(id); });
+      if (rel.length) {
+        art.appendChild(h("section", { class: "la-related" },
+          h("h2", { class: "la-section-title", text: UI.related }),
+          h("div", { class: "la-chips" }, rel.map(function (id) {
+            return h("button", { class: "la-chip", type: "button", onclick: function () { go(id); } }, byId.get(id).titel);
+          }))
+        ));
+      }
+
+      // flashcards
+      var cards = (k.karten || []).filter(function (c) { return c && c.f; });
+      if (cards.length) {
+        var sec = h("section", { class: "la-cards" },
+          h("div", { class: "la-cards-head" },
+            h("h2", { class: "la-section-title", text: UI.cards + " (" + cards.length + ")" }),
+            h("button", { class: "la-btn la-ghost", type: "button", onclick: function () {
+              startPractice(cards.map(function (c) { return { f: c.f, r: c.r || "", konzept: k.titel, id: k.id }; }), k.titel);
+            } }, UI.practiceThese)
+          )
+        );
+        cards.forEach(function (c) {
+          var ans = h("p", { class: "la-r", text: c.r || "", hidden: "" });
+          var hint = h("span", { class: "la-hint", text: UI.reveal });
+          var b = h("button", { type: "button", "aria-expanded": "false" }, h("span", { class: "la-f", text: c.f }), hint);
+          b.addEventListener("click", function () {
+            var open = ans.hidden;
+            ans.hidden = !open;
+            b.setAttribute("aria-expanded", String(open));
+            hint.textContent = open ? UI.conceal : UI.reveal;
+          });
+          sec.appendChild(h("div", { class: "la-card" }, b, ans));
+        });
+        art.appendChild(sec);
+      }
+
+      view.replaceChildren(art);
+      setTitle(k.titel + " – " + KURS.titel);
+    }
+
+    // ---------- practice ----------
+    function shuffle(a) {
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+
+    function openDialog() {
+      if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); }
+      else dlg.setAttribute("open", "");
+    }
+    function closeDialog() {
+      if (typeof dlg.close === "function") { if (dlg.open) dlg.close(); }
+      else dlg.removeAttribute("open");
+    }
+
+    function startPractice(cards, label) {
+      if (!cards || !cards.length) return;
+      practice = { label: label, all: cards.slice(), queue: shuffle(cards.slice()), total: cards.length, done: 0, missed: new Set(), cur: null, revealed: false };
+      openDialog();
+      nextCard();
+    }
+
+    function nextCard() {
+      practice.cur = practice.queue.shift() || null;
+      practice.revealed = false;
+      renderDeck();
+    }
+
+    function renderDeck() {
+      var p = practice, d = deck;
+      d.replaceChildren();
+      d.appendChild(h("div", { class: "la-deck-head" },
+        h("span", { text: p.label + " – " + UI.progress(p.done, p.total) }),
+        h("button", { type: "button", class: "la-close", "aria-label": UI.close, onclick: closePractice }, "\u2715")
+      ));
+      d.appendChild(h("div", { class: "la-progress", "aria-hidden": "true" }, h("span", { style: "width:" + Math.round(p.done / p.total * 100) + "%" })));
+
+      if (!p.cur) {
+        d.appendChild(h("p", { class: "la-question", text: UI.doneTitle }));
+        d.appendChild(h("p", { class: "la-summary", text: UI.doneText(p.total, p.missed.size) }));
+        var acts = h("div", { class: "la-actions" });
+        if (p.missed.size) acts.appendChild(h("button", { class: "la-btn", type: "button", onclick: function () { startPractice(Array.from(p.missed), p.label); } }, UI.repeatMissed + " (" + p.missed.size + ")"));
+        acts.appendChild(h("button", { class: "la-btn la-quiet", type: "button", onclick: function () { startPractice(p.all, p.label); } }, UI.restart));
+        acts.appendChild(h("button", { class: "la-btn la-quiet", type: "button", onclick: closePractice }, UI.close));
+        d.appendChild(acts);
+        d.focus();
+        return;
+      }
+
+      if (p.cur.konzept && p.cur.konzept !== p.label) d.appendChild(h("p", { class: "la-concept-name", text: p.cur.konzept }));
+      d.appendChild(h("p", { class: "la-question", text: p.cur.f }));
+      if (p.revealed) {
+        d.appendChild(h("p", { class: "la-answer", text: p.cur.r }));
+        d.appendChild(h("div", { class: "la-actions" },
+          h("button", { class: "la-btn la-quiet", type: "button", onclick: function () { grade(false); } }, UI.again),
+          h("button", { class: "la-btn", type: "button", onclick: function () { grade(true); } }, UI.knewIt)
+        ));
+        d.appendChild(h("p", { class: "la-keys", text: UI.keysGraded }));
+      } else {
+        d.appendChild(h("div", { class: "la-actions" }, h("button", { class: "la-btn", type: "button", onclick: reveal }, UI.showAnswer)));
+        d.appendChild(h("p", { class: "la-keys", text: UI.keysReveal }));
+      }
+      d.focus();
+    }
+
+    function reveal() { practice.revealed = true; renderDeck(); }
+
+    function grade(known) {
+      var p = practice;
+      if (known) p.done++;
+      else { p.missed.add(p.cur); p.queue.push(p.cur); }
+      nextCard();
+    }
+
+    function closePractice() { practice = null; closeDialog(); }
+
+    dlg.addEventListener("close", function () { practice = null; });
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) closePractice(); });
+
+    document.addEventListener("keydown", function (e) {
+      if (practice) {
+        if (e.key === "Escape") { closePractice(); return; }
+        if (!practice.cur) return;
+        if (!practice.revealed && (e.key === " " || e.key === "Enter")) { e.preventDefault(); reveal(); return; }
+        if (practice.revealed && e.key === "1") { e.preventDefault(); grade(false); }
+        if (practice.revealed && e.key === "2") { e.preventDefault(); grade(true); }
+        return;
+      }
+      // "/" jumps to the search box, unless the user is typing somewhere else
+      var t = e.target, tag = (t && t.tagName) || "";
+      if (e.key === "/" && tag !== "INPUT" && tag !== "TEXTAREA" && !(t && t.isContentEditable)) { e.preventDefault(); $("#la-q").focus(); }
+    });
+
+    // ---------- content check (author view) ----------
+    function wc(s) { return String(s || "").trim().split(/\s+/).filter(Boolean).length; }
+
+    function textChecks(t, where, add) {
+      t = String(t);
+      if (/[\r\n]/.test(t)) add("error", where, "contains a line break");
+      var todoAt = t.search(/\bTODO\b/);
+      if (todoAt >= 0) add("todo", where, t.slice(todoAt, todoAt + 90));
+      if (/"/.test(t)) add("warn", where, "contains straight quotes; use \u201E \u201C \u201D instead");
+      if (/[*#`_]|<[a-z\/]|\$\$|\\\(|\\\[/i.test(t)) add("warn", where, "contains formatting characters (* # ` _ < >, LaTeX) that will show as-is");
+      if (/^\s*(?:[-\u2022]|\d+[.)])\s/.test(t)) add("warn", where, "starts like a list item");
+    }
+
+    function checkContent() {
+      var out = [];
+      var add = function (sev, where, msg) { out.push({ sev: sev, where: where, msg: msg }); };
+      var seen = new Map();
+      KONZEPTE.forEach(function (k, i) {
+        if (!k || typeof k !== "object") { add("error", "#" + (i + 1), "not an object"); return; }
+        var where = k.id || "(no id) #" + (i + 1);
+        if (!k.id) add("error", where, "missing id");
+        else {
+          if (!/^[a-z0-9-]+$/.test(k.id)) add("error", where, "id must use only a\u2013z, 0\u20139 and hyphens; no umlauts, spaces or capitals");
+          if (seen.has(k.id)) add("error", where, "duplicate id, also used at #" + (seen.get(k.id) + 1));
+          seen.set(k.id, i);
+        }
+        if (!k.titel) add("error", where, "missing titel");
+
+        var tags = Array.isArray(k.schlagworte) ? k.schlagworte : [];
+        if (tags.length < 5 || tags.length > 10) add("warn", where + " \u203A schlagworte", tags.length + " keywords, target is 5 to 10");
+
+        if (!k.kurz) add("error", where + " \u203A kurz", "missing");
+        else {
+          textChecks(k.kurz, where + " \u203A kurz", add);
+          var sents = (String(k.kurz).match(/[.!?](\s|$)/g) || []).length;
+          if (sents < 2 || sents > 4) add("warn", where + " \u203A kurz", "about " + sents + " sentences, target is 2 to 4");
+        }
+
+        var eb = k.ebenen || {};
+        LEVELS.forEach(function (key) {
+          var w2 = where + " \u203A ebenen." + key;
+          var t = eb[key];
+          if (!t) { add("error", w2, "missing"); return; }
+          textChecks(t, w2, add);
+          var n = wc(t);
+          if (!/\bTODO\b/.test(t) && (n < 60 || n > 100)) add("warn", w2, n + " words, target is 60 to 100");
+        });
+        for (var a = 0; a < LEVELS.length; a++) for (var b = a + 1; b < LEVELS.length; b++) {
+          var A = String(eb[LEVELS[a]] || "").trim(), B = String(eb[LEVELS[b]] || "").trim();
+          if (A && A === B) add("error", where + " \u203A ebenen", LEVELS[a] + " and " + LEVELS[b] + " are identical");
+        }
+        Object.keys(eb).forEach(function (key) { if (LEVELS.indexOf(key) < 0) add("warn", where + " \u203A ebenen." + key, "unknown level, the app ignores it"); });
+
+        var rel = Array.isArray(k.verwandt) ? k.verwandt : [];
+        if (rel.length > 2) add("warn", where + " \u203A verwandt", rel.length + " links, maximum is 2");
+        if (new Set(rel).size !== rel.length) add("warn", where + " \u203A verwandt", "duplicate link");
+        rel.forEach(function (id) {
+          if (id === k.id) add("error", where + " \u203A verwandt", "links to itself");
+          else if (!byId.has(id)) add("error", where + " \u203A verwandt", "unknown id \u201E" + id + "\u201C");
+        });
+
+        var cards = Array.isArray(k.karten) ? k.karten : [];
+        if (cards.length < 3 || cards.length > 5) add("warn", where + " \u203A karten", cards.length + " cards, target is 3 to 5");
+        cards.forEach(function (c, j) {
+          var w3 = where + " \u203A karten[" + (j + 1) + "]";
+          if (!c || !c.f) { add("error", w3, "missing question"); return; }
+          if (!c.r) add("error", w3, "missing answer");
+          textChecks(c.f, w3 + ".f", add);
+          textChecks(c.r, w3 + ".r", add);
+          if (wc(c.f) > 15) add("warn", w3 + ".f", wc(c.f) + " words, maximum is 15");
+          if (wc(c.r) > 25) add("warn", w3 + ".r", wc(c.r) + " words, maximum is 25");
+          if (/^(is|are|does|do|can|could|should|was|were|will|would|has|have|had|did|ist|sind|kann|hat|gibt|wird)\b/i.test(String(c.f).trim())) add("warn", w3 + ".f", "looks like a yes/no question");
+        });
+      });
+      var order = { error: 0, todo: 1, warn: 2 };
+      return out.sort(function (a, b) { return order[a.sev] - order[b.sev]; });
+    }
+
+    function renderCheck() {
+      var issues = checkContent();
+      var counts = { error: 0, warn: 0, todo: 0 };
+      issues.forEach(function (i) { counts[i.sev]++; });
+      var sec = h("section", { class: "la-report" },
+        h("h1", { text: UI.checkTitle }),
+        h("p", { class: "la-lead", text: UI.checkSummary(KONZEPTE.length, allCards().length, counts.error, counts.warn, counts.todo) })
+      );
+      if (!issues.length) sec.appendChild(h("p", { text: UI.checkClean }));
+      else sec.appendChild(h("ul", { class: "la-issues" }, issues.map(function (i) {
+        return h("li", { class: "la-" + i.sev },
+          h("span", { class: "la-sev", text: UI.sev[i.sev] }),
+          h("span", { class: "la-where", text: i.where }),
+          h("span", { class: "la-msg", text: i.msg })
+        );
+      })));
+      sec.appendChild(h("p", { class: "la-note", text: UI.checkNote }));
+      $("#la-view").replaceChildren(sec);
+      setTitle(UI.checkTitle + " – " + KURS.titel);
+    }
+
+    // ---------- wiring ----------
+    $("#la-brand-title").textContent = KURS.titel;
+    $("#la-brand-sub").textContent = KURS.untertitel;
+    $("#la-foot-text").textContent = KURS.fusszeile;
+    $("#la-index-title").textContent = UI.indexTitle;
+    $("#la-check-btn").textContent = UI.checkTitle;
+    $("#la-check-btn").hidden = !KURS.checkLink;
+    $("#la-q").placeholder = UI.searchPlaceholder;
+
+    $("#la-brand-btn").addEventListener("click", function () { go(null); });
+    $("#la-check-btn").addEventListener("click", function () { go(CHECK_ROUTE); });
+    $("#la-index-toggle").addEventListener("click", function () { setIndexOpen(!$("#la-index").classList.contains("la-open")); });
+
+    var q = $("#la-q");
+    q.addEventListener("input", function () { query = q.value; renderIndex(); if (query) setIndexOpen(true); });
+    q.addEventListener("focus", function () { if (query) setIndexOpen(true); });
+    q.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { var first = search(query)[0]; if (first) { go(first.id); q.blur(); } }
+      if (e.key === "Escape") { q.value = ""; query = ""; renderIndex(); q.blur(); }
+    });
+
+    window.addEventListener("hashchange", route);
+    route();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</div>
+<!-- ======================================================================
+     WORDPRESS: copy up to here.
+     ====================================================================== -->
+
+</body>
+</html>
